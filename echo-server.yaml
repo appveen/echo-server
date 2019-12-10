@@ -12,7 +12,7 @@ spec:
     - protocol: TCP
       name: 'echo-server'
       port: 31000
-      targetPort: 3000
+      targetPort: 31000
       nodePort: 31000
 ---
 apiVersion: apps/v1beta1
@@ -34,6 +34,6 @@ spec:
     spec:
       containers:
         - name: 'echo-server'
-          image: 'odp:echo-server'
+          image: 'odp:echo-server-1.0.0'
           ports:
-            - containerPort: 3000
+            - containerPort: 31000

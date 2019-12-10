@@ -1,9 +1,9 @@
 FROM node:10-alpine
 
-COPY . .
+WORKDIR /app
 
-RUN npm i
+COPY main /app/.
 
-EXPOSE 3000
+EXPOSE 31000
 
-CMD [ "node", "app.js"]
+CMD [ "./main"]
