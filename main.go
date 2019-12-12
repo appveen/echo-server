@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"io"
+	"io/ioutil"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -21,17 +22,24 @@ func InitEchoServer() {
 		Addr:    "0.0.0.0:31000",
 		Handler: r,
 	}
-	fmt.Println("Starting Server at port number - 31000 ")
+	fmt.Println("Starting Server at port number - 31000 \n")
 	tempServer.ListenAndServe()
 }
 func echoHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Request received at echo server ...")
-	w.WriteHeader(200)
-	fmt.Println("Copying request body in response body ...")
-	n, err := io.Copy(w, r.Body)
+	fmt.Println("[", time.Now(), "]  Request received at echo server ")
+	fmt.Println("[", time.Now(), "]  Reading request body")
+	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		fmt.Println("Request failed, error while writing data in response ", fmt.Sprintf("%s", err))
-	} else {
-		fmt.Println("Request Completed, bytes written in response body ", n)
+		fmt.Println("[", time.Now(), "]  error reading request body \n", err)
+		w.Header().Set("status-code", "515")
+		w.Write([]byte("Error " + err.Error()))
+		return
 	}
+	fmt.Println("[", time.Now(), "] number of bytes read from request body ", len(data))
+	fmt.Println("[", time.Now(), "] writing data in response body")
+	w.Write(data)
+	fmt.Println("[", time.Now(), "]  data written in response body\n")
+	w.Header().Set("content-type", r.Header.Get("content-type"))
+	w.Header().Set("status-code", "200")
+	return
 }

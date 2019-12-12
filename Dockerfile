@@ -1,9 +1,11 @@
-FROM scratch
+FROM golang:1.13 AS build
 
-WORKDIR /app
-
-COPY main /app/.
+WORKDIR /
 
 EXPOSE 31000
 
-CMD [ "./main"]
+COPY ./ /
+
+RUN  go get -u github.com/gorilla/mux && env GOOS=linux GOARCH=386 go build -ldflags="-s -w" -o echo-server .
+
+ENTRYPOINT [ "echo-server" ]
